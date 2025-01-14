@@ -22,7 +22,7 @@ public class Factorial {
     }
 
     public static void main(String[] args) {
-        int factorial = computeFactorial(4);
+        int factorial = computeFactorial(5);
         System.out.println(factorial);
     }
 }
