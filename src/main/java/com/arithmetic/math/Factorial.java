@@ -11,18 +11,17 @@ public class Factorial {
     }
 
     private static int computeFactorial(int num){
-        int i = 1;
-        int n = i;
-        while (num >= 1){
-            n = prod(i,n);
-            i += 1;
+        int n = 1;
+        while (num > 1){
+            n *= prod(num,num-1);
+            num = num-1;
             num --;
         }
         return n;
     }
 
     public static void main(String[] args) {
-        int factorial = computeFactorial(5);
+        int factorial = computeFactorial(3);
         System.out.println(factorial);
     }
 }
