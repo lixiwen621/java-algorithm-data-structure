@@ -1,1 +1,1 @@
-# java-arithmetic-data-structure
+# java-algorithm-data-structure
