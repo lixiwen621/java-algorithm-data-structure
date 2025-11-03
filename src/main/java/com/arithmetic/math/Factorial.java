@@ -14,14 +14,13 @@ public class Factorial {
         int n = 1;
         while (num > 1){
             n *= prod(num,num-1);
-            num = num-1;
-            num --;
+            num = num-2;
         }
         return n;
     }
 
     public static void main(String[] args) {
-        int factorial = computeFactorial(3);
+        int factorial = computeFactorial(6);
         System.out.println(factorial);
     }
 }

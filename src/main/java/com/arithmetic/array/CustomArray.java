@@ -1,6 +1,5 @@
 package com.arithmetic.array;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**

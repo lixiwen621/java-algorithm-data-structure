@@ -11,28 +11,67 @@ public class AddOneArray {
     public static void main(String[] args) {
         int[] nums1 = {1,2,3};
         int[] num2 = {9,9,9};
-        int[] newNums1 = addOneInArray(nums1);
-        int[] newNums2 = addOneInArray(num2);
+        int[] newNums1 = addOneInArray2(nums1);
+        int[] newNums2 = addOneInArray22(num2);
         System.out.println(Arrays.toString(newNums1));
         System.out.println(Arrays.toString(newNums2));
     }
 
     public static int[] addOneInArray(int[] nums){
-        for (int i= nums.length-1; i >= 0; i--){
-            nums[i] = nums[i] + 1;
-            if (nums[i] % 10 != 0){
+        int carry=0, right= nums.length-1;
+
+        while (right >= 0){
+            nums[right] = nums[right] + 1;
+            //判断是否有进位
+            carry = nums[right]/10;
+            if (carry == 0){
                 return nums;
             }
-            nums[i] = 0;
+            nums[right]= 0;
+            right--;
+
+        }
+        // 说明需要new 一个数组来进位了
+        if (carry > 0 ){
+            int[] newNums = new int[nums.length+1];
+            newNums[0]=1;
+            System.arraycopy(nums,0,newNums,1,newNums.length-1);
+            return newNums;
+        }
+        return nums;
+
+    }
+
+    public static int[] addOneInArray2(int[] digits){
+        int n = digits.length;
+        for (int i=n-1; i>=0; i--){
+            if (digits[i] < 9){
+                digits[i]++;
+                return digits;
+            }
+            // 需要进位
+            digits[i] = 0;
         }
 
-        int[] newNums = new int[nums.length+1];
-        newNums[0] = 1;
-        // System.arraycopy 有下面这种效果
-        // for (int n=1; n<newNums.length; n++){
-        //            newNums[n] = nums[n-1];
-        //        }
-        System.arraycopy(nums, 0, newNums, 1, newNums.length - 1);
-        return newNums;
+        // 如果到这里, 说明原生数组是 [9,9,9....]
+        int[] result = new int[digits.length+1];
+        result[0] = 1;
+        return result;
+    }
+
+    public static int[] addOneInArray22(int[] digits){
+        int n = digits.length;
+        for (int i=n-1; i >= 0; i--){
+            if (digits[i] < 9){
+                digits[i]++;
+                return digits;
+            }
+            // 等于9 说明需要进位
+            digits[i] = 0;
+        }
+        // 如果到这里, 说明原生数组是  [9,9,9 ...] 一类的
+        int[] result = new int[digits.length+1];
+        result[0] = 1;
+        return result;
     }
 }
