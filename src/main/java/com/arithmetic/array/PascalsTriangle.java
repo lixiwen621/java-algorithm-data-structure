@@ -16,13 +16,13 @@ import java.util.Arrays;
  */
 public class PascalsTriangle {
     public static void main(String[] args) {
-        int[] current = generatePascalsTriangle(4);
+        int[] current = generatePascalsTriangle2(4);
         System.out.println(Arrays.toString(current));
     }
 
     /**
      *
-     * @param n n为行号
+     * @param n n为行号, 从0开始的行号
      * @return
      */
     public static int[] generatePascalsTriangle(int n){
@@ -42,6 +42,38 @@ public class PascalsTriangle {
                 current[j] = previous[j-1] + previous[j];
             }
             // 修改prev
+            previous = current;
+        }
+        return current;
+    }
+
+    /**
+     *
+     * @param n  n为行号, n从1开始
+     * @return
+     */
+    public static int[] generatePascalsTriangle2(int n){
+        int[] first = {1};
+        int[] previous = {1,1};
+        if (n == 0){
+            throw new RuntimeException("行号从0开始");
+        }
+        if (n == 1){
+            return first;
+        }
+        if (n == 2){
+            return previous;
+        }
+        // current为当前行的狐族, previous为上一行数组
+        int[] current = null;
+        for (int i=3; i<=n; i++){
+            current = new int[i];
+            current[0] = 1;
+            current[i-1] = 1;
+            for (int j=1; j<i-1; j++){
+                current[j] = previous[j-1] + previous[j];
+            }
+            // 修改 prev
             previous = current;
         }
         return current;

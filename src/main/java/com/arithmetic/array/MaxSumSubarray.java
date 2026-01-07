@@ -1,5 +1,7 @@
 package com.arithmetic.array;
 
+import java.util.Arrays;
+
 /**
  *  最大和子数组
  *  您已获得一个包含数字的数组。查找并返回输入数组中连续子数组中的最大和
@@ -31,7 +33,8 @@ public class MaxSumSubarray {
         int[] arr = {1, 2, 3, -4, 6};
         int[] arr2 = {1, 2, -5, -4, 1, 6};
         int[] arr3 = {-2, 1, -3, 4, -1, 2, 1, -5, 4};
-        System.out.println(maxSumSubarray22(arr));
+
+        System.out.println(Arrays.toString(kadaneWithIndices(arr3)));
         System.out.println(maxSumSubarray(arr2));
         System.out.println(maxSumSubarray2(arr));
         System.out.println(maxSumSubarray2(arr2));
@@ -73,13 +76,38 @@ public class MaxSumSubarray {
         return maxSum;
     }
 
-    public static int maxSumSubarray22(int[] num){
-        int maxSum = 0;
-        int currentSum = 0;
-        for (int i=0; i< num.length; i++){
-            currentSum = Math.max(num[i],currentSum+num[i]);
-            maxSum = Math.max(currentSum,maxSum);
+    /**
+     *  如果你还想返回具体的子数组（起始和结束索引）
+     * @param arr
+     * @return
+     */
+    public static int[] kadaneWithIndices(int[] arr){
+        if (arr == null || arr.length == 0) {
+            throw new IllegalArgumentException("Array must not be null or empty");
         }
-        return maxSum;
+
+        int start = 0, end = 0;
+        int tempStart = 0; // 用于记录可能的新起点
+        int maxSum = arr[0];
+        int currentSum = arr[0];
+
+        for (int i = 1; i < arr.length; i++) {
+            // 如果之前的 currentSum 是负数，重新开始
+            if (currentSum < 0){
+                currentSum = arr[i];
+                tempStart = i;
+            }else {
+                currentSum += arr[i];
+            }
+
+            // 如果currentSum
+            if (currentSum > maxSum){
+                maxSum = currentSum;
+                start = tempStart;
+                end = i;
+            }
+        }
+
+        return new int[]{maxSum, start, end};
     }
 }
