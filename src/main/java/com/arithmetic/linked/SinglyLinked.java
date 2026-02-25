@@ -1,50 +1,123 @@
 package com.arithmetic.linked;
 
+import java.util.NoSuchElementException;
+
 /**
  *  单向链表
  */
 public class SinglyLinked<E> {
-    private Node<E> head;
+
+    public static void main(String[] args) {
+        SinglyLinked<String> list = new SinglyLinked<>();
+        list.linkLast("a");
+        list.linkLast("b");
+        list.linkLast("c");
+        list.linkLast("d");
+        list.linkLast("e");
+        list.linkLast("f");
+        list.linkLast("0");
+        System.out.println(list);
+        String removedFirst = list.removeFirst();
+        System.out.println(removedFirst);
+        System.out.println(list);
+
+
+    }
+
+    private Node<E> first;
+    // 尾部节点，用于快速添加元素到尾部
+    private Node<E> last;
     int size;
 
 
     private static class Node<E>{
-        E element;
+        E item;
         Node<E> next;
 
-        Node(Node<E> next, E element){
-            this.element = element;
+        Node(E element, Node<E> next){
+            this.item = element;
             this.next = next;
         }
     }
 
     /**
-     * 添加元素到节点尾部
-     * @param element
+     *  从头部插入元素
+     * @param e
      */
-    public void append(E element){
-        final Node<E> newNode = new Node<>(null,element);
-        if (this.head == null){
-            this.head = newNode;
-        }else {
-            Node<E> lastNode = this.head;
-            while (lastNode.next != null){
-                lastNode = lastNode.next;
-            }
-            lastNode.next = newNode;
+    public void linkFirst(E e){
+        final Node<E> head = first;
+        final Node<E> newNode = new Node<>(e,head);
+        if (last == null){
+            last = newNode;
         }
-        this.size ++;
+        first = newNode;
+        size++;
     }
 
     /**
-     *  在链表头节点添加数据
-     * @param element
+     *  从尾部插入元素
+     * @param e
      */
-    public void appendFirst(E element){
-        final Node<E> newNode = new Node<>(null,element);
-        newNode.next = this.head;
-        this.head = newNode;
+    public void linkLast(E e){
+        final Node<E> newNode = new Node<>(e,null);
+        if (first == null){
+            first = newNode;
+            last = newNode;
+        }else {
+            last.next = newNode;
+            last = newNode;
+        }
         size++;
+    }
+
+    /**
+     *  从头节点开始删除元素
+     * @return
+     */
+    public E removeFirst(){
+        final Node<E> f = first;
+        if (f == null){
+            throw new NoSuchElementException();
+        }
+
+        final E element = f.item;
+        final Node<E> next = f.next;
+        f.item = null;
+        f.next = null; // help GC
+        first = next;
+        if (first == null){
+            last = null;
+        }
+        size--;
+        return element;
+    }
+
+    /**
+     *  从尾部开始删除元素
+     * @return
+     */
+    public E removeLast(){
+        final Node<E> l = last;
+        if (l == null){
+            throw new NoSuchElementException();
+        }
+
+        final E element = l.item;
+        if (first == last){
+            first = null;
+            last = null;
+        }else {
+            // 找到 last的上一个节点
+            Node<E> prev = first;
+            while (prev.next != last){
+                prev = prev.next;
+            }
+            prev.next = null;
+            l.item = null; // help GC
+            last = prev;
+        }
+        size--;
+        return element;
     }
 
     /**
@@ -52,87 +125,87 @@ public class SinglyLinked<E> {
      * @param element
      */
     public void remove(E element){
-        Node<E> current = this.head;
 
-        // 如果删除的是头节点
-        if (current != null && current.element.equals(element)){
-            this.head = current.next;
-            current = null; // help GC
-            return;
-        }
-        // 查找要删除的节点，并保持对前一个节点的引用
-        Node<E> prev = null;
-        while (current != null && !current.element.equals(element)){
-            prev = current;
-            current = current.next;
-        }
 
-        // 如果未找到要删除的节点
-        if (current == null)
-            return;
-
-        prev.next = current.next;
-        current = null; // help GC
-        size--;
-
-    }
-    /**
-     *  根据索引获取Node
-     * @param index
-     * @return
-     */
-    public E get(int index){
-        checkElementIndex(index);
-        Node<E> x = this.head;
-        for (int i=0; i < index; i++){
-            x = x.next;
-        }
-        return x.element;
     }
 
 
+    private void checkElementIndex(int index){
+        if (!isElementIndex(index)){
+            throw new IndexOutOfBoundsException("Index: "+ index + ", Size: "+size);
+        }
+    }
 
-    private boolean isElementIndex(int index) {
+    private boolean isElementIndex(int index){
         return index >= 0 && index < size;
     }
 
-    private void checkElementIndex(int index) {
-        if (!isElementIndex(index))
-            throw new IndexOutOfBoundsException("index越界");
-    }
-
-    private void unlink(Node<E> x){
-        final E element = x.element;
-        final Node<E> next = x.next;
-
-
-    }
-
-    public Object[] toArray(){
-        Object[] result = new Object[size];
-        Node<E> current = this.head;
-        int i=0;
-        while (current != null){
-            result[i] = current.element;
-            current = current.next;
-            i++;
+    private Node<E> getNodeByIndex(int index){
+        // 确保index 已经校验合法
+        // 从first 开始
+        Node<E> x = first;
+        for (int i=0; i<index; i++){
+            x = x.next;
         }
-        return result;
+        return x;
+    }
+
+    private E unlink(Node<E> prev, Node<E> x){
+        final E element = x.item;
+        final Node<E> next = x.next;
+        if (prev == null){
+            first = next;
+        }else {
+            prev.next = next;
+        }
+        x.item = null;
+        x.next = null; // help GC
+        size--;
+        return element;
+    }
+
+    public E getLast(){
+        final Node<E> l = last;
+        if (l == null){
+            return null;
+        }
+        return l.item;
+    }
+
+    public void clear(){
+        Node<E> f = first;
+        while (f != null){
+            Node<E> next = f.next;
+            f.item = null;
+            f.next = null;
+            f = next;
+        }
+        first = null;
+        last = null;
+        size = 0;
+    }
+
+    public int getSize(){
+        return size;
     }
 
     @Override
     public String toString() {
-        Node<E> current = head;
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        while (current != null){
-            builder.append(current.element);
-            current = current.next;
-            if (current == null)
-                return builder.append("]").toString();
-
-            builder.append(", ");
+        Node<E> head = first;
+        if (head == null){
+            return "[]";
         }
-        return builder.append("]").toString();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        while (head != null){
+            sb.append(head.item);
+            if (head.next != null){
+                sb.append(", ");
+            }
+            head = head.next;
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }
